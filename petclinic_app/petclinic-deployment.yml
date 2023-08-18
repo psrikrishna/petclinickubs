@@ -4,7 +4,7 @@ metadata:
   name: petclinic-deployment
   namespace: petclinic
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: petclinic
