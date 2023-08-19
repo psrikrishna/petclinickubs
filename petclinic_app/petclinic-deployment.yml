@@ -4,7 +4,7 @@ metadata:
   name: petclinic-deployment
   namespace: petclinic
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: petclinic
@@ -31,3 +31,6 @@ spec:
                 secretKeyRef:
                   name: app-credentials
                   key: APP_PASSWORD
+          resources:
+            requests:
+              cpu: 100m
