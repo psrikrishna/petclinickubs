@@ -17,7 +17,7 @@ spec:
       volumes:
         - name: data-volume
           persistentVolumeClaim:
-            claimName: postgres-pvc  # Replace with your PVC's claim name
+            claimName: postgres-pvc  
       containers:
         - name: postgres
           image: postgres:latest
@@ -40,5 +40,5 @@ spec:
           ports:
             - containerPort: 5432
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data  # Path inside the container
+            - mountPath: /var/lib/postgresql/data  
               name: data-volume
