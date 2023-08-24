@@ -18,11 +18,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/arch
+              - key: eks.amazonaws.com/nodegroup
                 operator: In
                 values:
-                - amd64
-                - arm64      
+                - public-nodes
       containers:
         - name: petclinic
           image: srikp/images:petclinic-app
@@ -36,4 +35,4 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: petclinic
       nodeSelector:
-        kubernetes.io/hostname: ip-10-0-1-96.eu-west-2.compute.internal
+       eks.amazonaws.com/nodegroup: public-nodes
