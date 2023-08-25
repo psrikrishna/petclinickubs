@@ -42,6 +42,6 @@ spec:
                   key: APP_PASSWORD
           resources:
             requests:
-              cpu: 100m
+              cpu: 250m
       nodeSelector:
        eks.amazonaws.com/nodegroup: public-nodes
