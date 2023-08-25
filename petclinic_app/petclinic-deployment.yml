@@ -31,8 +31,17 @@ spec:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service:5432/petclinic
             - name: SPRING_DATASOURCE_USERNAME
-              value: petclinic
+              valueFrom:
+                secretKeyRef:
+                  name: app-credentials
+                  key: APP_USER
             - name: SPRING_DATASOURCE_PASSWORD
-              value: petclinic
+              valueFrom:
+                secretKeyRef:
+                  name: app-credentials
+                  key: APP_PASSWORD
+          resources:
+            requests:
+              cpu: 100m
       nodeSelector:
        eks.amazonaws.com/nodegroup: public-nodes
