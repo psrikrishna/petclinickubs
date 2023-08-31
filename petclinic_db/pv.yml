@@ -5,11 +5,11 @@ metadata:
   namespace: petclinic
 spec:
   capacity:
-    storage: 5Gi
+    storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: standard
   hostPath:
-    path: "/Users/srikrishnapeddinti/Downloads/hcp/kubs/data"  # Replace with your actual path
+    path: "/Users/srikrishnapeddinti/Downloads/hcp/kubs/data"  

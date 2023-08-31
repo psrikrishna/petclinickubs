@@ -1,19 +1,35 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: postgres-deployment
+  name: postgres
   namespace: petclinic
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: postgres
+  serviceName: postgres
   template:
     metadata:
       labels:
         app: postgres
     spec:
       restartPolicy: Always
+      initContainers:
+        - name: postgres-init
+          image: postgres:latest
+          command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+            ordinal=${BASH_REMATCH[1]}
+            if [[ $ordinal -eq 0 ]]; then
+              printf "I am the primary"
+            else
+              printf "I am a read-only replica"
+            fi
       volumes:
         - name: data-volume
           persistentVolumeClaim:
@@ -37,8 +53,31 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: POSTGRES_PASSWORD
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
           ports:
             - containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - "pg_isready --host $POD_IP"
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - "pg_isready --host $POD_IP"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
           volumeMounts:
             - mountPath: /var/lib/postgresql/data  
               name: data-volume
