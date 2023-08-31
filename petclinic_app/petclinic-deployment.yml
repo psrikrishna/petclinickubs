@@ -26,7 +26,7 @@ spec:
         - name: petclinic
           image: srikp/images:petclinic-app
           ports:
-            - containerPort: 8080
+            - containerPort: 8088
           env:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service:5432/petclinic
