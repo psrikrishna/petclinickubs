@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-data-0  # You can change this name if needed
+  namespace: petclinic
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany  # This matches the PVC's accessModes
+  persistentVolumeReclaimPolicy: Retain  # Adjust as needed
+  storageClassName: gp2
+  claimRef:
+    name: data-postgres-0  # This should match the PVC name for this PV
+    namespace: petclinic
+  hostPath:
+    path: /var/lib/postgresql/data  # Adjust this path to the actual host path you want to use
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-data-1  # You can change this name if needed
+  namespace: petclinic
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany  # This matches the PVC's accessModes
+  persistentVolumeReclaimPolicy: Retain  # Adjust as needed
+  storageClassName: gp2
+  claimRef:
+    name: data-postgres-1  # This should match the PVC name for this PV
+    namespace: petclinic
+  hostPath:
+    path: /var/lib/postgresql/data 

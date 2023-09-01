@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: petclinic
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup
+                operator: In
+                values:
+                - private-nodes
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_DB
+              name: db-credentials
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_USER
+              name: db-credentials
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: db-credentials
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        image: postgres:latest
+        name: postgres
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data/
+          name: data
+      initContainers:
+      - command:
+        - bash
+        - -c
+        - |
+          set -ex
+          [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          if [[ $ordinal -eq 0 ]]; then
+            printf "I am the primary"
+          else
+            printf "I am a read-only replica"
+          fi
+        image: postgres:latest
+        name: postgres-init
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: private-nodes
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: petclinic
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      storageClassName: gp2
+      resources:
+        requests:
+          storage: 1Gi
