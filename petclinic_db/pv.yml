@@ -7,14 +7,22 @@ spec:
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadWriteMany  # This matches the PVC's accessModes
+  - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain  # Adjust as needed
+  nodeAffinity:
+      required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup
+                operator: In
+                values:
+                - private-nodes
   storageClassName: gp2
   claimRef:
     name: data-postgres-0  # This should match the PVC name for this PV
     namespace: petclinic
   hostPath:
-    path: /var/lib/postgresql/data  # Adjust this path to the actual host path you want to use
+    path: "/tmp/data01"  # Adjust this path to the actual host path you want to use
 
 ---
 
@@ -27,11 +35,19 @@ spec:
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadWriteMany  # This matches the PVC's accessModes
+    - ReadWriteOnce  # This matches the PVC's accessModes
   persistentVolumeReclaimPolicy: Retain  # Adjust as needed
+  nodeAffinity:
+      required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: eks.amazonaws.com/nodegroup
+                operator: In
+                values:
+                - private-nodes
   storageClassName: gp2
   claimRef:
     name: data-postgres-1  # This should match the PVC name for this PV
     namespace: petclinic
   hostPath:
-    path: /var/lib/postgresql/data 
+    path: "/tmp/data02" 
