@@ -24,7 +24,8 @@ spec:
                 - public-nodes
       containers:
         - name: petclinic
-          image: srikp/images:petclinic-app
+          image: 053805025174.dkr.ecr.eu-west-2.amazonaws.com/petclinic:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8088
           env:

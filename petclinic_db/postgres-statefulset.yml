@@ -64,7 +64,7 @@ spec:
           else
             printf "I am a read-only replica"
           fi
-        image: postgres:latest
+        image: postgres
         name: postgres-init
       nodeSelector:
         eks.amazonaws.com/nodegroup: private-nodes
